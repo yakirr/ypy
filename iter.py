@@ -4,6 +4,8 @@ import itertools
 import sys
 from time import time
 
+# wraps any iterable, and prints a progress report as it runs through
+# that iterable
 def show_progress(iterable, increment_percent=1, verbose=False, total=100):
 	if isinstance(iterable, collections.Sized):
 		total = len(iterable)
