@@ -11,7 +11,7 @@ def show_progress(iterable, increment_percent=1, verbose=False, total=100):
 		total = len(iterable)
 	stepsize = max(int(increment_percent / 100 * total), 1)
 	t0 = time()
-	for i, x in zip(xrange(total), iterable):
+	for i, x in itertools.izip(xrange(total), iterable):
 		if i % stepsize == 0:
 			if not verbose:
 				print('.', end='')
