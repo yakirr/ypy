@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 import subprocess
 import sys
+import pretty
 
 def add_main_and_submit(parser, main_function, submit_function):
     subparsers = parser.add_subparsers()
@@ -15,14 +16,9 @@ def add_main_and_submit(parser, main_function, submit_function):
 
 def choose_parser_and_run(parser):
     args, _ = parser.parse_known_args()
-    print_namespace(args); print()
+    pretty.print_namespace(args); print()
 
     args._func(args)
-
-def print_namespace(ns):
-    for name, val in sorted(vars(ns).items()):
-        if not name.startswith('_'):
-            print('{:<25}{}'.format(name, val))
 
 def param_dict_to_commandline_list(d):
     result = []
