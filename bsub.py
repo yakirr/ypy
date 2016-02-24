@@ -28,18 +28,23 @@ def param_dict_to_commandline_list(d):
     return result
 
 def bsub_command(command, outfilepath, jobname=None, queue='short', time_in_hours=12,
-        memory_GB=8):
+        time_in_minutes=None, memory_GB=8):
+    if time_in_minutes:
+        time = '0:' + str(time_in_minutes)
+    else:
+        time = str(time_in_hours) + ':00'
     return ['bsub'] + \
         (['-J', jobname] if jobname else []) + \
         ['-q', queue,
-        '-W', str(time_in_hours) + ':00',
+        '-W', time,
         '-oo', outfilepath,
-        '-R', '"rusage[mem=' + str(memory_GB * 1024) + '] select[model!=XeonE5345 && model!=XeonE5430]"',
+        '-R', '"rusage[mem=' + str(int(memory_GB * 1024)) + '] select[model!=XeonE5345 && model!=XeonE5430]"',
         ' '.join(command)]
 
-def submit(command, outfilepath, jobname=None, queue='short', time_in_hours=12, memory_GB=8,
-        debug=False):
-    bsub_cmd = bsub_command(command, outfilepath, jobname, queue, time_in_hours, memory_GB)
+def submit(command, outfilepath, jobname=None, queue='short', time_in_hours=12,
+        time_in_minutes=None, memory_GB=8, debug=False):
+    bsub_cmd = bsub_command(command, outfilepath, jobname, queue,
+            time_in_hours, time_in_minutes, memory_GB)
     print('\033[92m' + ' '.join(bsub_cmd) + '\033[0m')
     print('\033[94m' + outfilepath + '\033[0m')
     if not debug:
