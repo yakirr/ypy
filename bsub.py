@@ -3,7 +3,7 @@ import subprocess
 import sys
 import pretty
 
-def add_main_and_submit(parser, main_function, submit_function):
+def add_main_and_submit(parser, main_function, submit_function, merge_function=None):
     subparsers = parser.add_subparsers()
 
     subparser_main = subparsers.add_parser('main')
@@ -12,7 +12,12 @@ def add_main_and_submit(parser, main_function, submit_function):
     subparser_submit = subparsers.add_parser('submit')
     subparser_submit.set_defaults(_func=submit_function)
 
-    return subparser_main, subparser_submit
+    if merge_function is None:
+        return subparser_main, subparser_submit
+    else:
+        subparser_merge = subparsers.add_parser('merge')
+        subparser_merge.set_defaults(_func=merge_function)
+        return subparser_main, subparser_submit, subparser_merge
 
 def choose_parser_and_run(parser):
     args, _ = parser.parse_known_args()
