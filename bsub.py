@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 import subprocess
 import sys
+import math
 import pretty
 
 def add_main_and_submit(parser, main_function, submit_function,
@@ -29,25 +30,20 @@ def choose_parser_and_run(parser):
 
     args._func(args)
 
-def param_dict_to_commandline_list(d):
-    result = []
-    for k, v in d.items():
-        result.append('--' + k)
-        result.append(str(v))
-    return result
-
 def bsub_command(command, outfilepath, jobname=None, queue='short', time_in_hours=12,
         time_in_minutes=None, memory_GB=8, depends_on=None):
     if time_in_minutes:
         time = '0:' + str(time_in_minutes)
     else:
         time = str(time_in_hours) + ':00'
+    # the commented line below is to filter out ottavinos, but those should usually be fast
     return ['bsub'] + \
         (['-J', jobname] if jobname else []) + \
         ['-q', queue,
         '-W', time,
         '-oo', outfilepath,
         '-R', '"rusage[mem=' + str(int(memory_GB * 1024)) + \
+                # '] select[model!=XeonE5345 && model!=XeonE5430 && model!=XeonE52680]"'] + \
                 '] select[model!=XeonE5345 && model!=XeonE5430]"'] + \
             (['-w', 'done({})'.format(depends_on)] if depends_on is not None else []) + \
         [' '.join(command)]
@@ -64,3 +60,12 @@ def submit(command, outfilepath, jobname=None, queue='short', time_in_hours=12,
         return output.replace('[','<').replace('>','<').split('<')[1] # parse out job id
     else:
         return 'JOBID'
+
+# batch_num is 1-indexed
+def elements_in_batch(elements, batch_num, num_per_batch):
+    return elements[(batch_num - 1) * num_per_batch:
+            min(batch_num * num_per_batch, len(elements))]
+
+def num_batches(num_elements, num_per_batch):
+    return int(math.ceil(num_elements / num_per_batch))
+
