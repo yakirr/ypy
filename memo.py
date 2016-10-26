@@ -2,6 +2,12 @@ from __future__ import print_function, division
 import collections
 import functools
 
+allmemos = []
+
+def reset():
+    for memo in allmemos:
+        memo.reset()
+
 class memoized(object):
     '''Decorator. Caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned
@@ -9,6 +15,11 @@ class memoized(object):
     '''
     def __init__(self, func):
         self.func = func
+        self.cache = {}
+        allmemos.append(self)
+
+    def reset(self):
+        del self.cache
         self.cache = {}
 
     def __call__(self, *args):

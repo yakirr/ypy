@@ -24,3 +24,12 @@ def show_progress(iterable, increment_percent=1, verbose=False, total=100):
             sys.stdout.flush()
         yield x
     print('\n')
+
+# returns chunks of a certain size
+def grouper(chunk_size, iterable):
+    it = iter(iterable)
+    while True:
+        chunk = list(itertools.islice(it, chunk_size))
+        if not chunk:
+            return
+        yield chunk
