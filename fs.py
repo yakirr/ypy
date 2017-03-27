@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-import os
+import os, resource
 
 # Create directory if necessary. If the directory exists do nothing
 def makedir(path_to_dir):
@@ -25,3 +25,7 @@ def make_hidden(path_to_file):
 def replace_ext(path_to_file, new_extension):
     root, ext = os.path.splitext(path_to_file)
     return root + '.' + new_extension
+
+def mem():
+    print('memory usage:', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1000, 'Mb')
+
