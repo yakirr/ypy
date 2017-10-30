@@ -7,6 +7,7 @@ from time import time
 # wraps any iterable, and prints a progress report as it runs through
 # that iterable
 def show_progress(iterable, increment_percent=1, verbose=False, total=100):
+    # if we can determine the size of the iterable, then use that to determine progress
     if isinstance(iterable, collections.Sized):
         total = len(iterable)
     stepsize = max(int(increment_percent / 100 * total), 1)

@@ -2,6 +2,7 @@ from __future__ import print_function, division
 import collections
 import functools
 
+# this package creates a memoized decorator for functions
 allmemos = []
 
 def reset():
